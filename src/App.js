@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from 'react'
+import 'semantic-ui-css/semantic.min.css'
+import FormPassenger from "./FormPassenger";
+import TablePassengers from "./components/TablePassengers/TablePassengers";
+import MainMenu from "./components/MainMenu";
+import BreadcrumbExampleDivider from "./components/BreadCrumbs";
+import {Container} from "semantic-ui-react";
+import {Provider} from "react-redux";
+import store from './redux/store'
+import {BrowserRouter} from 'react-router-dom'
+import MainForm from "./MainForm";
+import StepExampleStackable from "./components/StepProgress";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const App = () => {
+
+    return (
+        <Provider store={store}>
+            <BrowserRouter>
+                <Container>
+                    <MainMenu/>
+
+                    <BreadcrumbExampleDivider/>
+                    <StepExampleStackable />
+
+                    <MainForm />
+
+                </Container>
+            </BrowserRouter>
+        </Provider>
+    )
 }
 
-export default App;
+export default App
