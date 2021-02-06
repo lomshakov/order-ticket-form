@@ -1,3 +1,6 @@
+import {randomInteger, updateObjectInArray} from "../utils/utils";
+import { v4 as idGenerate } from 'uuid';
+
 let initialState = {
     editMode: false,
     passengers: [{
@@ -13,7 +16,8 @@ let initialState = {
         paymentRate: '',
         agreement: false,
         phone: '',
-        mail: ''
+        mail: '',
+        deleteMarked: false
     }]
 }
 
@@ -21,7 +25,7 @@ const passengerReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'ORDER/ADD_PASSENGER':
             let newPassenger = {
-                id: 5,
+                id: idGenerate(),
                 name: action.data.name,
                 surname: action.data.surname,
                 middleName: action.data.middleName,
@@ -33,8 +37,8 @@ const passengerReducer = (state = initialState, action) => {
                 paymentRate: action.data.paymentRate,
                 agreement: action.data.agreement,
                 phone: action.data.phone,
-                mail: action.data.mail
-
+                mail: action.data.mail,
+                deleteMarked: false
             }
             return {
                 ...state,
@@ -45,6 +49,18 @@ const passengerReducer = (state = initialState, action) => {
                 ...state,
                 editMode: action.mode
             }
+        case 'ORDER/CHANGE_DELETE_MARKED':
+            return {
+                ...state,
+                passengers: updateObjectInArray(state.passengers, action.id, "id", 'deleteMarked')
+            }
+        case 'ORDER/DELETE_PASSENGERS':
+            //debugger
+            return {
+                ...state,
+                passengers: state.passengers.filter(item => item.deleteMarked === false)
+            }
+
         default:
             return state
     }
@@ -52,5 +68,7 @@ const passengerReducer = (state = initialState, action) => {
 
 export const setUserProfile = (data) => ({type: 'ORDER/ADD_PASSENGER', data})
 export const setEditMode = (mode) => ({type: 'ORDER/SET_EDIT_MODE', mode})
+export const changeDeleteMarked = (id) => ({type: 'ORDER/CHANGE_DELETE_MARKED', id})
+export const deletePassengers = () => ({type: 'ORDER/DELETE_PASSENGERS'})
 
 export default passengerReducer

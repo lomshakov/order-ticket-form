@@ -2,9 +2,9 @@ import React, {useState} from 'react'
 import { Button, Checkbox, Icon, Table } from 'semantic-ui-react'
 import Passenger from "./Passenger";
 import {connect} from "react-redux";
-import {setEditMode} from "../../redux/passengerReducer";
+import {changeDeleteMarked, customADDPASSENGER, deletePassengers, setEditMode} from "../../redux/passengerReducer";
 
-const TablePassengers = ({ editMode, setEditMode, passengers }) => {
+const TablePassengers = ({ editMode, setEditMode, passengers, changeDeleteMarked, deletePassengers }) => {
     // const []
 
     const onClickAdd = () => {
@@ -12,7 +12,7 @@ const TablePassengers = ({ editMode, setEditMode, passengers }) => {
     }
 
     const onClickDelete = () => {
-
+        deletePassengers()
     }
 
     return (
@@ -28,7 +28,7 @@ const TablePassengers = ({ editMode, setEditMode, passengers }) => {
             </Table.Header>
 
             <Table.Body>
-                <Passenger passengers={passengers} />
+                <Passenger passengers={passengers} changeDeleteMarked={changeDeleteMarked} />
             </Table.Body>
 
             <Table.Footer fullWidth>
@@ -45,7 +45,7 @@ const TablePassengers = ({ editMode, setEditMode, passengers }) => {
                         >
                             <Icon name='user'/>Добавить
                         </Button>
-                        <Button size='small'>Удалить</Button>
+                        <Button size='small' onClick={onClickDelete}>Удалить</Button>
 
                     </Table.HeaderCell>
                 </Table.Row>
@@ -62,4 +62,4 @@ const MapStateToProps = (state) => {
 
 }
 
-export default connect(MapStateToProps, {setEditMode})(TablePassengers)
+export default connect(MapStateToProps, {setEditMode, changeDeleteMarked, deletePassengers})(TablePassengers)
