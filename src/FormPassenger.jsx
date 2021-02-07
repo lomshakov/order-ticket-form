@@ -1,12 +1,25 @@
 import React, {useState} from 'react'
 import 'semantic-ui-css/semantic.min.css'
-import {Button, Checkbox, Form, Container, Grid, Segment, Divider, Loader, Dimmer, Message} from 'semantic-ui-react'
+import {
+    Button,
+    Checkbox,
+    Form,
+    Container,
+    Grid,
+    Segment,
+    Divider,
+    Loader,
+    Dimmer,
+    Message,
+    Header, Icon
+} from 'semantic-ui-react'
 import './App.css'
 import {addPassenger, sendPassenger, setEditMode} from "./redux/passengerReducer"
 import {connect} from "react-redux"
 import {options} from './components/common/options'
+import ModalWindow from "./components/Modal";
 
-const FormPassenger = ({passengers, setEditMode, addPassenger, sendPassenger}) => {
+const FormPassenger = ({ setEditMode, sendPassenger }) => {
 
     const [persons, setPersons] = useState([])
     const [count, setCount] = useState(1)
@@ -40,19 +53,11 @@ const FormPassenger = ({passengers, setEditMode, addPassenger, sendPassenger}) =
         }
     }
 
-    const disableEditMode = () => {
-        setEditMode(false)
-    }
-
     const handleSubmit = async () => {
         setLoading(true)
-        await setTimeout(() => {
-            setLoading(false)
-            let obj = {passengers: persons}
-            sendPassenger(obj)
-            setEditMode(false)
-        }, 2000)
-
+        await sendPassenger({passengers: persons})
+        setLoading(false)
+        setEditMode(false)
     }
 
     const resetFields = () => {
@@ -76,7 +81,7 @@ const FormPassenger = ({passengers, setEditMode, addPassenger, sendPassenger}) =
     return (
         <Container>
 
-            <Dimmer active={loading} style={{position: 'absolute', height: '100%'}} page>
+            <Dimmer active={loading} page>
                 <Loader content='Пожалуйста, подождите' />
             </Dimmer>
 
@@ -91,7 +96,7 @@ const FormPassenger = ({passengers, setEditMode, addPassenger, sendPassenger}) =
                                 </Grid.Column>
 
                                 <Grid.Column textAlign='right'>
-                                    <Button color='red' id={index} icon='remove' onClick={removeFields} disabled={fields.length === 1}/>
+                                    <Button color='red' id={index} icon='remove' onClick={removeFields} disabled={fields.length === 1} />
                                     <a style={{color: 'red'}} onClick={removeFields} href="#" disabled={fields.length === 1}>Удалить пассажира</a>
                                 </Grid.Column>
                             </Grid.Row>
@@ -214,7 +219,7 @@ const FormPassenger = ({passengers, setEditMode, addPassenger, sendPassenger}) =
 
             </Form>
 
-            <pre>{JSON.stringify(persons, null, 2)}</pre>
+            {/*<pre>{JSON.stringify(persons, null, 2)}</pre>*/}
 
         </Container>
     )

@@ -26,7 +26,7 @@ const passengerReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'ORDER/ADD_PASSENGER':
             action.data.passengers.map(p => p.ticketCost = randomInteger(1500, 5000))
-            action.data.map(p => p.id = idGenerate())
+            action.data.passengers.map(p => p.id = idGenerate())
             return {
                 ...state,
                 passengers: action.data.passengers
