@@ -1,80 +1,43 @@
 import React, {useState} from 'react'
 import 'semantic-ui-css/semantic.min.css'
-import {Button, Checkbox, Form, Container, Grid, Segment, Divider} from 'semantic-ui-react'
+import {Button, Checkbox, Form, Container, Grid, Segment, Divider, Loader, Dimmer, Message} from 'semantic-ui-react'
 import './App.css'
-import MainMenu from "./components/MainMenu";
-import BreadcrumbExampleDivider from "./components/BreadCrumbs";
+import {addPassenger, sendPassenger, setEditMode} from "./redux/passengerReducer"
+import {connect} from "react-redux"
+import {options} from './components/common/options'
 
-import FormExampleCaptureValues from "./components/Examples";
-import {passengerAPI} from "./api/api";
-import {setUserProfile, setEditMode} from "./redux/passengerReducer";
-import {connect} from "react-redux";
+const FormPassenger = ({passengers, setEditMode, addPassenger, sendPassenger}) => {
 
-const optionsGender = [
-    {key: 'm', text: 'Мужской', value: 'male'},
-    {key: 'f', text: 'Женский', value: 'female'}
-]
-
-const optionsCitizenship = [
-    {key: 'ru', text: 'Россия', value: 'russia'},
-    {key: 'ua', text: 'Украина', value: 'ukraine'},
-    {key: 'by', text: 'Беларусь', value: 'belarus'},
-    {key: 'kz', text: 'Казахстан', value: 'kazakhstan'},
-    {key: 'ar', text: 'Армения', value: 'armenia'}
-]
-
-const documentType = [
-    {key: 'p', text: 'Паспорт', value: 'pass'},
-    {key: 'm', text: 'Военный билет', value: 'militaryId'}
-]
-
-const paymentRate = [
-    {key: 'f', text: 'Полный', value: 'full'},
-    {key: 's', text: 'Льготный', value: 'sale'}
-]
-
-
-const FormPassenger = ({ setEditMode, setUserProfile }) => {
-
-
-    let initialState = {
-
-/*        id: null,
-        name: '',
-        surname: '',
-        middleName: '',
-        gender: '',
-        dateBorn: '',
-        citizenship: '',
-        documentType: '',
-        documentNumber: '',
-        paymentRate: '',
-        agreement: false,
-        phone: '',
-        mail: ''*/
-
-    }
-
-
-    const [person, setPerson] = useState({})
+    const [persons, setPersons] = useState([])
+    const [count, setCount] = useState(1)
+    const [fields, setFields] = useState([`pass${count}`])
     const [loading, setLoading] = useState(false)
 
-    /*const [name, setName] = useState('')
-    const [surname, setSurname] = useState('')
-    const [middleName, setMiddleName] = useState('')*/
+    const handleChange = (e, {name, value, checked}) => {
+        let newPropValue = (checked !== undefined) ? checked : value
 
-    /*const onValueChange = (setFunction) => (e) => {
-        setFunction(e.currentTarget.value)
-    }*/
 
-    const handleChange = (e, {name, value}) => {
-        //debugger
-        setPerson({...person, [name]: value})
-    }
+        let regex = /(?<=pass).*(?=\.)/
+        let regexNameProp = /(?<=\.).*/
 
-    const onClickCheckbox = (e, {name, checked}) => {
-        //debugger
-        setPerson({...person, [name]: checked})
+        let indexPerson = regex.exec(name)[0]
+        let nameProp = regexNameProp.exec(name)[0]
+
+        if (indexPerson > persons.length) {
+            setPersons([...persons, {[nameProp]: newPropValue}])
+        } else {
+            //debugger
+            setPersons(persons.map((item, index) => {
+                //debugger
+                if (index === indexPerson - 1) {
+                    const newObjProps = {
+                        [nameProp]: newPropValue
+                    }
+                    return {...item, ...newObjProps}
+                }
+                return item
+            }))
+        }
     }
 
     const disableEditMode = () => {
@@ -82,101 +45,185 @@ const FormPassenger = ({ setEditMode, setUserProfile }) => {
     }
 
     const handleSubmit = async () => {
-        // let data = await passengerAPI.setPassengerData(person)
-        // console.log(data)
-        setUserProfile(person)
-        disableEditMode()
-        alert(JSON.stringify(person, null, 2))
+        setLoading(true)
+        await setTimeout(() => {
+            setLoading(false)
+            let obj = {passengers: persons}
+            sendPassenger(obj)
+            setEditMode(false)
+        }, 2000)
+
     }
 
     const resetFields = () => {
-        setPerson(null)
-        //debugger
+        setPersons([])
+    }
+
+    const addFields = () => {
+        let counter = count + 1
+        setCount(counter)
+        setFields([...fields, `pass${counter}`])
+    }
+
+    const removeFields = (e) => {
+        if (count > 1) {
+            setCount(count - 1)
+            setFields([...fields].filter((item, index) => index !== fields.length - 1))
+            setPersons([...persons].filter((item, index) => index !== Number(e.currentTarget.id)))
+        }
     }
 
     return (
         <Container>
 
-
-
-            <h1>Данные пассажира</h1>
+            <Dimmer active={loading} style={{position: 'absolute', height: '100%'}} page>
+                <Loader content='Пожалуйста, подождите' />
+            </Dimmer>
 
             <Form onSubmit={handleSubmit}>
-                <Form.Group>
-                    <Form.Input fluid required name='name' label='Имя' placeholder='Имя' onChange={handleChange} width={6}/>
-                    <Form.Input fluid required name='surname' label='Фамилия' placeholder='Фамилия' onChange={handleChange} width={6}/>
-                    <Form.Input fluid required name='middleName' label='Отчество' placeholder='Отчество' onChange={handleChange}
-                                width={6} />
-                </Form.Group>
+                {fields.map((name, index) => (
+                    <div key={name}>
 
-                <Form.Group>
-                    <Form.Select
-                        fluid
-                        required
-                        name='gender'
-                        label='Пол'
-                        options={optionsGender}
-                        onChange={handleChange}
-                        placeholder='Пол'
-                        width={6}
-                    />
-                    <Form.Input required name='dateBorn' type='date' fluid label='Дата рождения' placeholder='Дата рождения' onChange={handleChange} width={6}/>
-                    <Form.Select
-                        fluid
-                        required
-                        name='citizenship'
-                        label='Гражданство'
-                        options={optionsCitizenship}
-                        onChange={handleChange}
-                        width={6}
-                    />
-                </Form.Group>
+                        <Grid columns={2} style={{marginBottom: '15px'}}>
+                            <Grid.Row>
+                                <Grid.Column>
+                                    <h2 style={{color: 'red'}}>Пассажир №{index+1}</h2>
+                                </Grid.Column>
 
-                <Form.Group>
-                    <Form.Select
-                        fluid
-                        required
-                        name='documentType'
-                        label='Тип документа'
-                        options={documentType}
-                        onChange={handleChange}
-                        width={6}
-                    />
-                    <Form.Input fluid required name='documentNumber' label='Номер документа' placeholder='Номер документа' onChange={handleChange} width={6}/>
-                    <Form.Select
-                        fluid
-                        required
-                        name='paymentRate'
-                        label='Тариф'
-                        options={paymentRate}
-                        onChange={handleChange}
-                        width={6}
-                    />
-                </Form.Group>
-
-                <Form.Checkbox name='agreement' label='Согласен на получение оповещений' onChange={onClickCheckbox}/>
-
-                <Divider horizontal style={{marginTop: '50px'}}>Не забудьте</Divider>
-
-                <Form.Group>
-                    <Form.Input fluid name='phone' label='Телефон пассажира' placeholder='Телефон пассажира' onChange={handleChange} width={8}/>
-                    <Form.Input fluid name='mail' label='E-mail' placeholder='E-mail' onChange={handleChange} width={8}/>
-
-                </Form.Group>
-
-                <Button size='big' onClick={disableEditMode}>Назад</Button>
-                <Button size='big' primary type='submit'>Отправить</Button>
-                {/*<Button onClick={resetFields}>Очистить</Button>*/}
+                                <Grid.Column textAlign='right'>
+                                    <Button color='red' id={index} icon='remove' onClick={removeFields} disabled={fields.length === 1}/>
+                                    <a style={{color: 'red'}} onClick={removeFields} href="#" disabled={fields.length === 1}>Удалить пассажира</a>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
 
 
+                        <Form.Group>
+                            <Form.Input fluid required name={`${name}.name`}
+                                        value={persons[index] ? persons[index].name : ''}
+                                        label='Имя' placeholder='Имя' onChange={handleChange}
+                                        width={6}/>
+                            <Form.Input fluid required name={`${name}.surname`}
+                                        value={persons[index] ? persons[index].surname : ''}
+                                        label='Фамилия' placeholder='Фамилия'
+                                        onChange={handleChange} width={6}/>
+                            <Form.Input fluid required name={`${name}.middleName`}
+                                        value={persons[index] ? persons[index].middleName : ''}
+                                        label='Отчество' placeholder='Отчество'
+                                        onChange={handleChange}
+                                        width={6}/>
+                        </Form.Group>
+
+                        <Form.Group>
+                            <Form.Select
+                                fluid
+                                required
+                                name={`${name}.gender`}
+                                value={persons[index] ? persons[index].gender : ''}
+                                label='Пол'
+                                options={options.gender}
+                                onChange={handleChange}
+                                placeholder='Пол'
+                                width={6}
+                            />
+                            <Form.Input required name={`${name}.dateBorn`} type='date' fluid
+                                        value={persons[index] ? persons[index].dateBorn : ''}
+                                        label='Дата рождения' placeholder='Дата рождения' onChange={handleChange} width={6}/>
+                            <Form.Select
+                                fluid
+                                required
+                                name={`${name}.citizenship`}
+                                value={persons[index] ? persons[index].citizenship : ''}
+                                label='Гражданство'
+                                options={options.citizenship}
+                                onChange={handleChange}
+                                width={6}
+                            />
+                        </Form.Group>
+
+                        <Form.Group>
+                            <Form.Select
+                                fluid
+                                required
+                                name={`${name}.documentType`}
+                                value={persons[index] ? persons[index].documentType : ''}
+                                label='Тип документа'
+                                options={options.documentType}
+                                onChange={handleChange}
+                                width={6}
+                            />
+                            <Form.Input fluid required name={`${name}.documentNumber`}
+                                        value={persons[index] ? persons[index].documentNumber : ''}
+                                        label='Номер документа' placeholder='Номер документа' onChange={handleChange} width={6}/>
+                            <Form.Select
+                                fluid
+                                required
+                                name={`${name}.paymentRate`}
+                                value={persons[index] ? persons[index].paymentRate : ''}
+                                label='Тариф'
+                                options={options.paymentRate}
+                                onChange={handleChange}
+                                width={6}
+                            />
+                        </Form.Group>
+
+                        <div style={{marginTop: '50px', marginBottom: '20px'}}>
+                            В соответствии с п.7 Правил перевозок пассажиров, багажа, грузобагажа железнодорожным транспортом при покупке билета необходимо указать свои контактные данные.
+                        </div>
+
+                        <Form.Group>
+                            <Form.Input fluid name={`${name}.phone`} label='Телефон пассажира'
+                                        value={persons[index] ? persons[index].phone : ''}
+                                        placeholder='Телефон пассажира' onChange={handleChange} width={8}/>
+                            <Form.Input fluid name={`${name}.mail`} label='E-mail'
+                                        value={persons[index] ? persons[index].mail : ''}
+                                        placeholder='E-mail' onChange={handleChange} width={8}/>
+
+                        </Form.Group>
+
+                        <Divider style={{marginTop: '50px'}} />
+                    </div>
+
+                ))}
+
+                <Button color='red' icon='add' onClick={addFields} />
+                <a style={{color: 'red'}} onClick={addFields} href="#">Добавить пассажира</a>
+                <Form.Checkbox required name='rulesAgree' style={{margin: '50px 0'}} label='Настоящим подтверждаю, что в случае оформления мною проездных документов на третьих лиц, предоставляю персональные данные с их согласия.'/>
+
+                <Divider style={{margin: '10px'}} />
+
+                <Grid columns={3} style={{marginBottom: '15px'}}>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Button>Вернуться</Button>
+                        </Grid.Column>
+
+                        <Grid.Column>
+                            <Button onClick={resetFields}>Очистить данные</Button>
+                        </Grid.Column>
+
+                        <Grid.Column textAlign='right'>
+                            <Button color='red' type='submit'>Зарезервировать места</Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+
+                <Message negative>
+                    <p>После успешного резервирования мест у вас будет 12 минут на оплату заказа.</p>
+                </Message>
 
             </Form>
 
-
-            {/*<pre>{JSON.stringify(person, null, 2)}</pre>*/}
+            <pre>{JSON.stringify(persons, null, 2)}</pre>
 
         </Container>
     )
 }
 
-export default connect(null, {setEditMode, setUserProfile})(FormPassenger)
+const MapStateToProps = (state) => {
+    return {
+        passengers: state.form.passengers
+    }
+}
+
+export default connect(MapStateToProps, {setEditMode, addPassenger, sendPassenger})(FormPassenger)

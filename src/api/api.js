@@ -6,7 +6,7 @@ const instance = axios.create({
 
 export const passengerAPI = {
     setPassengerData(data) {
-        return instance.put('', data)
+        return instance.post('', data)
             .then(response => response.data)
     }
 }

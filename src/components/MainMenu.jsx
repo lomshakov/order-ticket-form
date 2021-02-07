@@ -6,23 +6,20 @@ const MainMenu = () => {
     const [activeItem, setActiveItem] = useState('Главная')
 
     const handleItemClick = (e) => {
-        // debugger
         setActiveItem(e.currentTarget.innerText)
-        // setActiveItem('home')
     }
 
     return (
         <Menu size='medium'>
-            <Menu.Item
-                name='Главная'
-                active={activeItem === 'Главная'}
-                onClick={handleItemClick}
-            />
-            <Menu.Item
-                name='Правила'
-                active={activeItem === 'Правила'}
-                onClick={handleItemClick}
-            />
+            <Dropdown item text='Меню'>
+                <Dropdown.Menu>
+                    <Dropdown.Item>Мои заказы</Dropdown.Item>
+                    <Dropdown.Item>Мои заявки на перевозку ТС</Dropdown.Item>
+                    <Dropdown.Item>О сайте</Dropdown.Item>
+                    <Dropdown.Item>Правила покупки электронных билетов</Dropdown.Item>
+                    <Dropdown.Item>Поезда дальнего следования</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
 
             <Menu.Menu position='right'>
                 <Dropdown item text='Язык'>
@@ -34,7 +31,7 @@ const MainMenu = () => {
                 </Dropdown>
 
                 <Menu.Item>
-                    <Button primary>Войти</Button>
+                    <Button color='red'>Войти</Button>
                 </Menu.Item>
             </Menu.Menu>
         </Menu>

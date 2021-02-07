@@ -1,8 +1,9 @@
 import {randomInteger, updateObjectInArray} from "../utils/utils";
 import { v4 as idGenerate } from 'uuid';
+import {passengerAPI} from "../api/api";
 
 let initialState = {
-    editMode: false,
+    editMode: true,
     passengers: [{
         id: null,
         name: '',
@@ -17,32 +18,18 @@ let initialState = {
         agreement: false,
         phone: '',
         mail: '',
-        deleteMarked: false
+        ticketCost: 0
     }]
 }
 
 const passengerReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'ORDER/ADD_PASSENGER':
-            let newPassenger = {
-                id: idGenerate(),
-                name: action.data.name,
-                surname: action.data.surname,
-                middleName: action.data.middleName,
-                gender: action.data.gender,
-                dateBorn: action.data.dateBorn,
-                citizenship: action.data.citizenship,
-                documentType: action.data.documentType,
-                documentNumber: action.data.documentNumber,
-                paymentRate: action.data.paymentRate,
-                agreement: action.data.agreement,
-                phone: action.data.phone,
-                mail: action.data.mail,
-                deleteMarked: false
-            }
+            action.data.passengers.map(p => p.ticketCost = randomInteger(1500, 5000))
+            action.data.map(p => p.id = idGenerate())
             return {
                 ...state,
-                passengers: [...state.passengers, newPassenger]
+                passengers: action.data.passengers
             }
         case 'ORDER/SET_EDIT_MODE':
             return {
@@ -54,21 +41,26 @@ const passengerReducer = (state = initialState, action) => {
                 ...state,
                 passengers: updateObjectInArray(state.passengers, action.id, "id", 'deleteMarked')
             }
-        case 'ORDER/DELETE_PASSENGERS':
-            //debugger
+
+        case 'ORDER/SET_CURRENT_STEP':
             return {
                 ...state,
-                passengers: state.passengers.filter(item => item.deleteMarked === false)
+                currentStep: action.step
             }
-
         default:
             return state
     }
 }
 
-export const setUserProfile = (data) => ({type: 'ORDER/ADD_PASSENGER', data})
+export const addPassenger = (data) => ({type: 'ORDER/ADD_PASSENGER', data})
 export const setEditMode = (mode) => ({type: 'ORDER/SET_EDIT_MODE', mode})
 export const changeDeleteMarked = (id) => ({type: 'ORDER/CHANGE_DELETE_MARKED', id})
-export const deletePassengers = () => ({type: 'ORDER/DELETE_PASSENGERS'})
+export const setCurrentStep = (step) => ({type: 'ORDER/SET_CURRENT_STEP', step})
+
+export const sendPassenger = (data) => async (dispatch) => {
+    dispatch(addPassenger(data))
+    let dataResponse = await passengerAPI.setPassengerData(data)
+    alert('This object sending to server:' + JSON.stringify(dataResponse, null, 2))
+}
 
 export default passengerReducer
