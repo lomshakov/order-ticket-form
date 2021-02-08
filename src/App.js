@@ -9,7 +9,6 @@ import MainForm from './components/MainForm'
 import StepExampleStackable from './components/StepProgress'
 
 const App = () => {
-
     return (
         <Provider store={store}>
             <BrowserRouter>
