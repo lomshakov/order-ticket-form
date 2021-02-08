@@ -1,8 +1,8 @@
-import React from "react"
-import {Divider, Grid, Segment} from "semantic-ui-react"
-import {randomInteger} from "../utils/utils"
+import React from 'react'
+import {Divider, Grid, Segment} from 'semantic-ui-react'
+import {randomInteger} from '../utils/utils'
 
-const Passenger = ({ passenger }) => {
+const Passenger = ({passenger}) => {
     return (
         <Segment key={passenger.id}>
             <Grid columns={4}>

@@ -3,15 +3,15 @@ import { Button, Dropdown, Menu } from 'semantic-ui-react'
 
 const MainMenu = () => {
 
-    const [activeItem, setActiveItem] = useState('Главная')
+    const [activeItem, setActiveItem] = useState('Меню')
 
     const handleItemClick = (e) => {
         setActiveItem(e.currentTarget.innerText)
     }
 
     return (
-        <Menu size='medium'>
-            <Dropdown item text='Меню'>
+        <Menu size='tiny'>
+            <Dropdown onClick={handleItemClick} name='Меню' active={activeItem === 'Меню'} item text='Меню'>
                 <Dropdown.Menu>
                     <Dropdown.Item>Мои заказы</Dropdown.Item>
                     <Dropdown.Item>Мои заявки на перевозку ТС</Dropdown.Item>

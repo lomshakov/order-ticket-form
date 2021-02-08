@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
-import {Button, Dimmer, Divider, Grid, Header, Icon, Loader, Modal, Segment} from "semantic-ui-react"
-import {connect} from "react-redux"
-import {setEditMode} from "../redux/passengerReducer"
-import Passenger from "./Passenger"
-import ModalWindow from "./Modal";
+import {Button, Divider, Grid} from 'semantic-ui-react'
+import {connect} from 'react-redux'
+import {setEditMode} from '../redux/passengerReducer'
+import Passenger from './Passenger'
+import ModalWindow from './Modal'
 
 const Checkout = ({passengers, setEditMode}) => {
 

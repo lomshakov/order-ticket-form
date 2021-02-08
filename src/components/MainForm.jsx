@@ -1,7 +1,7 @@
 import React from 'react'
-import {connect} from "react-redux"
-import FormPassenger from "./FormPassenger"
-import Checkout from "./components/Checkout"
+import {connect} from 'react-redux'
+import FormPassenger from './FormPassenger'
+import Checkout from './Checkout'
 
 const MainForm = ({ editMode }) => {
     return (

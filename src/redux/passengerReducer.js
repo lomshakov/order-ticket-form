@@ -1,25 +1,10 @@
-import {randomInteger, updateObjectInArray} from "../utils/utils";
-import { v4 as idGenerate } from 'uuid';
-import {passengerAPI} from "../api/api";
+import {randomInteger, updateObjectInArray} from '../utils/utils'
+import { v4 as idGenerate } from 'uuid'
+import {passengerAPI} from '../api/api'
 
 let initialState = {
     editMode: true,
-    passengers: [{
-        id: null,
-        name: '',
-        surname: '',
-        middleName: '',
-        gender: '',
-        dateBorn: '',
-        citizenship: '',
-        documentType: '',
-        documentNumber: '',
-        paymentRate: '',
-        agreement: false,
-        phone: '',
-        mail: '',
-        ticketCost: 0
-    }]
+    passengers: [{ }]
 }
 
 const passengerReducer = (state = initialState, action) => {

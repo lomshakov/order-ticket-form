@@ -1,7 +1,7 @@
 import React from 'react'
 import {Button, Header, Icon, Modal} from 'semantic-ui-react'
 
-function ModalWindow({ setShowModal, showModal, enableEditMode }) {
+function ModalWindow({setShowModal, showModal, enableEditMode}) {
     return (
         <Modal
             trigger={<Button><Icon name='backward'/>Отменить резерв</Button>}
@@ -11,7 +11,7 @@ function ModalWindow({ setShowModal, showModal, enableEditMode }) {
             onOpen={() => setShowModal(true)}
             open={showModal}>
             <Header icon>
-                <Icon name='archive' />
+                <Icon name='archive'/>
                 Подтвердите действие
             </Header>
             <Modal.Content>
@@ -20,14 +20,14 @@ function ModalWindow({ setShowModal, showModal, enableEditMode }) {
                 </p>
             </Modal.Content>
             <Modal.Actions>
-                <Button  color='red' onClick={() => setShowModal(false)}>
-                    <Icon name='remove' /> Нет
+                <Button color='red' onClick={() => setShowModal(false)}>
+                    <Icon name='remove'/> Нет
                 </Button>
                 <Button color='green' onClick={() => {
                     setShowModal(false)
                     enableEditMode()
                 }}>
-                    <Icon name='checkmark' /> Да
+                    <Icon name='checkmark'/> Да
                 </Button>
             </Modal.Actions>
         </Modal>
