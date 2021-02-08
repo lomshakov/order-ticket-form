@@ -10,7 +10,6 @@ import {
     Dimmer,
     Message
 } from 'semantic-ui-react'
-import '../App.css'
 import {addPassenger, sendPassenger, setEditMode} from '../redux/passengerReducer'
 import {connect} from 'react-redux'
 import InputsItem from './InputsItem'
