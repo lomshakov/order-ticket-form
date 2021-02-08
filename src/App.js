@@ -6,7 +6,7 @@ import {Provider} from 'react-redux'
 import store from './redux/store'
 import {BrowserRouter} from 'react-router-dom'
 import MainForm from './components/MainForm'
-import StepExampleStackable from './components/StepProgress'
+import Steps from './components/StepProgress'
 
 const App = () => {
     return (
@@ -14,7 +14,7 @@ const App = () => {
             <BrowserRouter>
                 <Container>
                     <MainMenu/>
-                    <StepExampleStackable />
+                    <Steps />
                     <MainForm />
                 </Container>
             </BrowserRouter>

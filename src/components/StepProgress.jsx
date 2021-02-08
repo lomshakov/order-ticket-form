@@ -1,7 +1,7 @@
 import React from 'react'
 import {Icon, Step} from 'semantic-ui-react'
 
-const StepExampleStackable = () => (
+const Steps = () => (
     <Step.Group stackable='tablet' size='mini' style={{marginBottom: '50px', width: '100%'}}>
         <Step completed>
             <Icon name='train'/>
@@ -26,4 +26,4 @@ const StepExampleStackable = () => (
 
 )
 
-export default StepExampleStackable
+export default Steps
