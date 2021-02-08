@@ -16,7 +16,6 @@ import InputsItem from './InputsItem'
 import {updateProp} from '../utils/utils'
 
 const FormPassenger = ({setEditMode, sendPassenger}) => {
-
     const [persons, setPersons] = useState([])
     const [count, setCount] = useState(1)
     const [fields, setFields] = useState([`pass${count}`])

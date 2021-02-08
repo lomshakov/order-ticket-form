@@ -22,8 +22,6 @@ const Steps = () => (
             </Step.Content>
         </Step>
     </Step.Group>
-
-
 )
 
 export default Steps
